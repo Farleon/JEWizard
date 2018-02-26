@@ -14,7 +14,7 @@ import org.eclipse.che.api.fs.server.FsManager;
 import org.eclipse.che.api.fs.server.WsPathUtils;
 import org.eclipse.che.api.project.server.handlers.CreateProjectHandler;
 import org.eclipse.che.api.project.server.type.AttributeValue;
-
+//test commit
 /**
  * Generates a new project which contains a package.json with default content and a default
  * person.json file within an myJsonFiles folder.

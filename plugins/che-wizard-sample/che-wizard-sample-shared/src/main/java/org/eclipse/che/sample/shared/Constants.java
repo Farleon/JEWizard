@@ -23,5 +23,8 @@ public final class Constants {
 
   public static String COMPILER_VERSION_ATRIBUTE = "compiler_version";
 
+  public static String PROJECT_TYPE = "projecttype";
+  public static String TECHNOLOGY = "technology";
+
   private Constants() {}
 }

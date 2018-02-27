@@ -17,7 +17,13 @@ public interface SamplePageView extends View<SamplePageView.ActionDelegate> {
 
   void setCompilerVersion(String version);
 
+  public String getSelectedProjectType();
+
+  public String getSelectedTechnology();
+
   interface ActionDelegate {
     void onCompilerVersionChanged();
+
+    void onProjectTypeChanged();
   }
 }

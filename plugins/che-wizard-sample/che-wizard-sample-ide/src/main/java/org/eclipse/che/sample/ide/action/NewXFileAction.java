@@ -46,7 +46,6 @@ public class NewXFileAction extends ProjectAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-
     newXFilePresenter.showDialog();
   }
 

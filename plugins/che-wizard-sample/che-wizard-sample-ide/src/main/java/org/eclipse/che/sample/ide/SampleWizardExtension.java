@@ -23,7 +23,7 @@ import org.eclipse.che.sample.ide.action.NewXFileAction;
 @Extension(title = "Sample Wizard")
 public class SampleWizardExtension {
 
-  public static String X_CATEGORY = "Sample Category";
+  public static String X_CATEGORY = "Juju";
 
   @Inject
   public SampleWizardExtension(

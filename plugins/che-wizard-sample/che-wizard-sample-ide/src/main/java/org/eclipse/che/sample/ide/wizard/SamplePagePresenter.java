@@ -8,6 +8,8 @@
 package org.eclipse.che.sample.ide.wizard;
 
 import static org.eclipse.che.sample.shared.Constants.COMPILER_VERSION_ATRIBUTE;
+import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
+import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -53,5 +55,11 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
     Map<String, List<String>> attributes = dataObject.getAttributes();
     attributes.put(attrId, Arrays.asList(value));
     dataObject.setAttributes(attributes);
+  }
+
+  @Override
+  public void onProjectTypeChanged() {
+    setAttribute(PROJECT_TYPE, view.getSelectedProjectType());
+    setAttribute(TECHNOLOGY, view.getSelectedTechnology());
   }
 }

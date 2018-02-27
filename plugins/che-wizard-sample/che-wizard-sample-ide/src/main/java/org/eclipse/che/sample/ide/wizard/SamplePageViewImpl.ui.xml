@@ -26,8 +26,9 @@
                     <g:TextBox width="500px" ui:field="compilerVersion"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
-                    <g:Label text="Select components to support:" />
-                     <g:ListBox ui:field='jujuComponents' visibleItemCount='1'/>
+                    <g:Label text="Select component to support:" />
+                     <g:ListBox ui:field='technologies' />
+                     <g:ListBox ui:field='projecttypes'/>
                 </g:HorizontalPanel>
             </g:VerticalPanel>
         </g:north>

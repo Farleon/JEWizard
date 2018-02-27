@@ -8,6 +8,7 @@
 package org.eclipse.che.sample.ide.wizard;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -17,13 +18,16 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import org.eclipse.che.sample.shared.dao.TechnologyDAO;
 
 public class SamplePageViewImpl implements SamplePageView {
 
   private ActionDelegate delegate;
   private final DockLayoutPanel rootElement;
+  private final TechnologyDAO dao;
   @UiField TextBox compilerVersion;
-  @UiField ListBox jujuComponents;
+  @UiField ListBox technologies;
+  @UiField ListBox projecttypes;
 
   private static SamplePageViewImplUiBinder uiBinder = GWT.create(SamplePageViewImplUiBinder.class);
 
@@ -31,16 +35,36 @@ public class SamplePageViewImpl implements SamplePageView {
   public SamplePageViewImpl() {
     rootElement = uiBinder.createAndBindUi(this);
     compilerVersion.setFocus(true);
-    jujuComponents.setVisibleItemCount(10);
-    jujuComponents.setMultipleSelect(true);
-    jujuComponents.addItem("ArangoDB");
-    jujuComponents.addItem("Spark");
-    jujuComponents.addItem("Flask");
+    dao = TechnologyDAO.getInstance();
+    technologies.setVisibleItemCount(10);
+    projecttypes.setVisibleItemCount(10);
+    for (String t : dao.getTechnologies().keySet()) {
+      technologies.addItem(t);
+    }
+    technologies.addItem("testopvulling");
+    technologies.addItem("testopvulling1");
+    technologies.addItem("testopvulling2");
+    technologies.addItem("testopvulling3");
+    technologies.addItem("testopvulling4");
   }
 
   @UiHandler({"compilerVersion"})
   void onKeyUp(KeyUpEvent event) {
     delegate.onCompilerVersionChanged();
+  }
+
+  @UiHandler("technologies")
+  void onChangeListBox(ChangeEvent event) {
+    int index = technologies.getSelectedIndex();
+    String val = technologies.getValue(index);
+    projecttypes.clear();
+    for (String p : dao.getTechnologies().get(val).getProjectTypes().keySet()) {
+      projecttypes.addItem(p);
+    }
+    projecttypes.addItem(val + "testopvulling1");
+    projecttypes.addItem(val + "testopvulling2");
+    projecttypes.addItem(val + "testopvulling3");
+    delegate.onProjectTypeChanged();
   }
 
   @Override
@@ -64,5 +88,18 @@ public class SamplePageViewImpl implements SamplePageView {
     compilerVersion.setText(version);
   }
 
+  public String getSelectedProjectType() {
+    int index = projecttypes.getSelectedIndex();
+    String val = projecttypes.getValue(index);
+    return val;
+  }
+
   interface SamplePageViewImplUiBinder extends UiBinder<DockLayoutPanel, SamplePageViewImpl> {}
+
+  @Override
+  public String getSelectedTechnology() {
+    int index = technologies.getSelectedIndex();
+    String val = technologies.getValue(index);
+    return val;
+  }
 }

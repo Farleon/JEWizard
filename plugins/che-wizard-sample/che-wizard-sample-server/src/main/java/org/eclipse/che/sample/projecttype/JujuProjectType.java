@@ -7,7 +7,6 @@
  */
 package org.eclipse.che.sample.projecttype;
 
-import static org.eclipse.che.sample.shared.Constants.COMPILER_VERSION_ATRIBUTE;
 import static org.eclipse.che.sample.shared.Constants.JUJU_PROJECT_TYPE_ID;
 import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 
@@ -23,7 +22,6 @@ public class JujuProjectType extends ProjectTypeDef {
   @Inject
   public JujuProjectType() {
     super(JUJU_PROJECT_TYPE_ID, "Juju Project", true, false, true);
-    addVariableDefinition(COMPILER_VERSION_ATRIBUTE, "GCC compiler version", false);
-    addVariableDefinition(PROJECT_TYPE, "Project type", true);
+    addVariableDefinition(PROJECT_TYPE, "Project type", false);
   }
 }

@@ -16,16 +16,16 @@ import org.eclipse.che.api.fs.server.FsManager;
 import org.eclipse.che.api.fs.server.WsPathUtils;
 import org.eclipse.che.api.project.server.handlers.CreateProjectHandler;
 import org.eclipse.che.api.project.server.type.AttributeValue;
+import org.eclipse.che.ide.api.project.MutableProjectConfig;
 import org.eclipse.che.sample.shared.dao.TechnologyDAO;
 import org.eclipse.che.sample.shared.logic.ProjectType;
 import org.eclipse.che.sample.shared.logic.Technology;
 
-// test commit
 /**
  * Generates a new project which contains a package.json with default content and a default
  * person.json file within an myJsonFiles folder.
  */
-public class JujuCreateProjectHandler implements CreateProjectHandler {
+public class JujuCreateProjectHandler extends MutableProjectConfig implements CreateProjectHandler {
 
   @Inject private FsManager fsManager;
   private static final String FILE_NAME = "package.json";
@@ -35,8 +35,9 @@ public class JujuCreateProjectHandler implements CreateProjectHandler {
   public void onCreateProject(
       String projectPath, Map<String, AttributeValue> attributes, Map<String, String> options)
       throws ConflictException, ServerException {
-
-    Technology t = dao.getTechnologies().get(TECHNOLOGY);
+    System.err.println(attributes.get("compiler_version").getString());
+    System.err.println(attributes.keySet());
+    Technology t = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
     ProjectType p = t.getProjectTypes().get(attributes.get(PROJECT_TYPE).getString());
     String location = p.getFileLocation();
     try (InputStream packageJson = getClass().getClassLoader().getResourceAsStream(location);

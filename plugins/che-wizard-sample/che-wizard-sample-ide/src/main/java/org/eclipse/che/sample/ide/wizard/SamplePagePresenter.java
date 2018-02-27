@@ -8,8 +8,6 @@
 package org.eclipse.che.sample.ide.wizard;
 
 import static org.eclipse.che.sample.shared.Constants.COMPILER_VERSION_ATRIBUTE;
-import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
-import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -41,13 +39,14 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
   @Override
   public void go(AcceptsOneWidget container) {
     container.setWidget(view);
-    view.setCompilerVersion("This is a test.");
-    setAttribute(COMPILER_VERSION_ATRIBUTE, "This is a test.");
+    view.setCompilerVersion("This is a test123.");
   }
 
   @Override
   public void onCompilerVersionChanged() {
-    setAttribute(COMPILER_VERSION_ATRIBUTE, view.getCompilerVersion());
+    // setAttribute(COMPILER_VERSION_ATRIBUTE, view.getCompilerVersion());
+    // setAttribute(PROJECT_TYPE, view.getSelectedProjectType());
+    // setAttribute(TECHNOLOGY, view.getSelectedTechnology());
   }
 
   /** Sets single value of attribute of data-object. */
@@ -59,7 +58,8 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
 
   @Override
   public void onProjectTypeChanged() {
-    setAttribute(PROJECT_TYPE, view.getSelectedProjectType());
-    setAttribute(TECHNOLOGY, view.getSelectedTechnology());
+    setAttribute(COMPILER_VERSION_ATRIBUTE, "fout?");
+    setAttribute(COMPILER_VERSION_ATRIBUTE, view.getSelectedProjectType());
+    // setAttribute(TECHNOLOGY, view.getSelectedTechnology());
   }
 }

@@ -62,7 +62,7 @@ public class SamplePageViewImpl implements SamplePageView {
       projecttypes.addItem(p);
     }
     projecttypes.addItem(val + "testopvulling1");
-    projecttypes.addItem(val + "testopvulling2");
+    projecttypes.addItem(index + "testopvulling2");
     projecttypes.addItem(val + "testopvulling3");
     delegate.onProjectTypeChanged();
   }
@@ -91,6 +91,7 @@ public class SamplePageViewImpl implements SamplePageView {
   public String getSelectedProjectType() {
     int index = projecttypes.getSelectedIndex();
     String val = projecttypes.getValue(index);
+    compilerVersion.setText("read it proj");
     return val;
   }
 
@@ -99,7 +100,14 @@ public class SamplePageViewImpl implements SamplePageView {
   @Override
   public String getSelectedTechnology() {
     int index = technologies.getSelectedIndex();
-    String val = technologies.getValue(index);
+    String val = "test";
+
+    compilerVersion.setText("read it tech");
+    try {
+      val = technologies.getValue(index);
+    } catch (Exception e) {
+      compilerVersion.setText(e.getMessage());
+    }
     return val;
   }
 }

@@ -17,9 +17,9 @@ public interface SamplePageView extends View<SamplePageView.ActionDelegate> {
 
   void setCompilerVersion(String version);
 
-  public String getSelectedProjectType();
+  String getSelectedProjectType();
 
-  public String getSelectedTechnology();
+  String getSelectedTechnology();
 
   interface ActionDelegate {
     void onCompilerVersionChanged();

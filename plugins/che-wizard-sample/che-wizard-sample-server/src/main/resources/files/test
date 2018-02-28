@@ -1,28 +1,7 @@
-{
-  "supported": [
-    {
-      "name": "ArangoDB",
-      "languages": [
-        {
-          "name": "java",  
-          "files": "/files/ArangoDB/java",
-          "config": "files/ArangoDB/java/config.json",
-          "newfile": "files/ArangoDB/java/newfile.json"
-        },
-        {
-          "name": "nodejs",  
-          "files": "/files/ArangoDB/nodejs"
-        }
-      ]
-    },
-    {
-      "name": "Python Flask",
-      "languages": [
-        {
-          "name": "python",            
-          "files": "/files/flask/python"
-        }
-      ]
+public class Main {
+
+    public static void main(String[] args) {
+	    // write your code here
+	    System.out.println("Hello World!");
     }
-  ]
 }

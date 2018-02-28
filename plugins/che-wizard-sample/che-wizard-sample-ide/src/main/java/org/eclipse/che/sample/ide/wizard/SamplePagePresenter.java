@@ -8,6 +8,8 @@
 package org.eclipse.che.sample.ide.wizard;
 
 import static org.eclipse.che.sample.shared.Constants.COMPILER_VERSION_ATRIBUTE;
+import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
+import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -34,6 +36,9 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
   @Override
   public void init(MutableProjectConfig dataObject) {
     super.init(dataObject);
+    setAttribute(PROJECT_TYPE, "testPROJ2");
+    setAttribute(TECHNOLOGY, "testTECH2");
+    setAttribute(COMPILER_VERSION_ATRIBUTE, "testCOMP2");
   }
 
   @Override
@@ -44,22 +49,18 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
 
   @Override
   public void onCompilerVersionChanged() {
-    // setAttribute(COMPILER_VERSION_ATRIBUTE, view.getCompilerVersion());
-    // setAttribute(PROJECT_TYPE, view.getSelectedProjectType());
-    // setAttribute(TECHNOLOGY, view.getSelectedTechnology());
+    setAttribute(COMPILER_VERSION_ATRIBUTE, view.getCompilerVersion());
   }
 
   /** Sets single value of attribute of data-object. */
   private void setAttribute(String attrId, String value) {
     Map<String, List<String>> attributes = dataObject.getAttributes();
     attributes.put(attrId, Arrays.asList(value));
-    dataObject.setAttributes(attributes);
   }
 
   @Override
   public void onProjectTypeChanged() {
-    setAttribute(COMPILER_VERSION_ATRIBUTE, "fout?");
-    setAttribute(COMPILER_VERSION_ATRIBUTE, view.getSelectedProjectType());
-    // setAttribute(TECHNOLOGY, view.getSelectedTechnology());
+    setAttribute(PROJECT_TYPE, view.getSelectedProjectType());
+    setAttribute(TECHNOLOGY, view.getSelectedTechnology());
   }
 }

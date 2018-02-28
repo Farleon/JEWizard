@@ -34,7 +34,6 @@ public class SamplePageViewImpl implements SamplePageView {
   @Inject
   public SamplePageViewImpl() {
     rootElement = uiBinder.createAndBindUi(this);
-    compilerVersion.setFocus(true);
     dao = TechnologyDAO.getInstance();
     technologies.setVisibleItemCount(10);
     projecttypes.setVisibleItemCount(10);
@@ -54,7 +53,7 @@ public class SamplePageViewImpl implements SamplePageView {
   }
 
   @UiHandler("technologies")
-  void onChangeListBox(ChangeEvent event) {
+  void onChangeListBoxTech(ChangeEvent event) {
     int index = technologies.getSelectedIndex();
     String val = technologies.getValue(index);
     projecttypes.clear();
@@ -67,12 +66,17 @@ public class SamplePageViewImpl implements SamplePageView {
     delegate.onProjectTypeChanged();
   }
 
+  @UiHandler("projecttypes")
+  void onChangeListBoxProj(ChangeEvent event) {
+    ;
+    delegate.onProjectTypeChanged();
+  }
+
   @Override
   public void setDelegate(ActionDelegate delegate) {
     this.delegate = delegate;
   }
 
-  /** Returns the {@link Widget} aspect of the receiver. */
   @Override
   public Widget asWidget() {
     return rootElement;
@@ -91,7 +95,6 @@ public class SamplePageViewImpl implements SamplePageView {
   public String getSelectedProjectType() {
     int index = projecttypes.getSelectedIndex();
     String val = projecttypes.getValue(index);
-    compilerVersion.setText("read it proj");
     return val;
   }
 
@@ -100,14 +103,7 @@ public class SamplePageViewImpl implements SamplePageView {
   @Override
   public String getSelectedTechnology() {
     int index = technologies.getSelectedIndex();
-    String val = "test";
-
-    compilerVersion.setText("read it tech");
-    try {
-      val = technologies.getValue(index);
-    } catch (Exception e) {
-      compilerVersion.setText(e.getMessage());
-    }
+    String val = technologies.getValue(index);
     return val;
   }
 }

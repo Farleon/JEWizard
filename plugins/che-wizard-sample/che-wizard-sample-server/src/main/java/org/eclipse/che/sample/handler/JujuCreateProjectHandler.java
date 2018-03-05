@@ -6,6 +6,7 @@ import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
 import com.google.inject.Inject;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -31,16 +32,14 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   public void onCreateProject(
       String projectPath, Map<String, AttributeValue> attributes, Map<String, String> options)
       throws ConflictException, ServerException {
+
+    // Get info from DAO
     dao = TechnologyDAO.getInstance();
-    for (String s : attributes.keySet()) {
-      System.err.println(s + ": " + attributes.get(s).getString());
-    }
     Technology t = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
-    System.err.println(t.getName());
     ProjectType p = t.getProjectTypes().get(attributes.get(PROJECT_TYPE).getString());
-    System.err.println(p.getName());
     String location = p.getFileLocation();
-    System.err.println(location);
+
+    // Read extra info from config
     try (InputStream packageJson = getClass().getClassLoader().getResourceAsStream(location);
         InputStream personJson = getClass().getClassLoader().getResourceAsStream("files/test")) {
       String projectWsPath = WsPathUtils.absolutize(projectPath);
@@ -56,5 +55,31 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   @Override
   public String getProjectType() {
     return JUJU_PROJECT_TYPE_ID;
+  }
+
+  public String readFromInputStream(InputStream is) {
+
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    int nRead;
+    byte[] data = new byte[1024];
+    try {
+      while ((nRead = is.read(data, 0, data.length)) != -1) {
+        buffer.write(data, 0, nRead);
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    try {
+      buffer.flush();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    byte[] byteArray = buffer.toByteArray();
+
+    String text = new String(byteArray);
+    return text;
   }
 }

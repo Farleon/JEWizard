@@ -35,14 +35,21 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
     Technology t = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
     ProjectType p = t.getProjectTypes().get(attributes.get(PROJECT_TYPE).getString());
     String location = p.getFileLocation();
-
+    String configString = "";
     // Read extra info from config
     try (InputStream config =
         getClass().getClassLoader().getResourceAsStream(location + "/config.json")) {
-      System.err.println(readFromInputStream(config));
+      configString = readFromInputStream(config);
     } catch (Exception e) {
       e.printStackTrace();
       throw new ServerException(e.getLocalizedMessage(), e);
+    }
+    // parse json
+
+    String[] lines = configString.split("\\r?\\n");
+
+    for (int i = 0; i < lines.length; i++) {
+      System.err.println("Line " + i + ": " + lines[0]);
     }
   }
 
@@ -52,7 +59,6 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   }
 
   public String readFromInputStream(InputStream is) {
-    System.err.println("try read");
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     int nRead;
     byte[] data = new byte[1024];
@@ -68,7 +74,6 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
     try {
       buffer.flush();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     byte[] byteArray = buffer.toByteArray();

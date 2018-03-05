@@ -1,0 +1,3 @@
+src,src/main,src/main/java,src/test,src/test/java
+Main.java:src/main/java
+pom.xml:

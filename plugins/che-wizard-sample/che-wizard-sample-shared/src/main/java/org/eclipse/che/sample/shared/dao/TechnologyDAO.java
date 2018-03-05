@@ -17,7 +17,7 @@ public final class TechnologyDAO {
   private void createSupported() {
     Technology arangodb = new Technology("arangodb");
     ProjectType arangodb_java = new ProjectType("ArangoDb Java Project", "/files/arangodb_java");
-    ProjectType arangodb_foxx = new ProjectType("ArangoDb Foxx Microservice", "/files/config.json");
+    ProjectType arangodb_foxx = new ProjectType("ArangoDb Foxx Microservice", "/files/arangodb_foxx");
     arangodb.addProjectType(arangodb_foxx);
     arangodb.addProjectType(arangodb_java);
     technologies.put("arangodb", arangodb);

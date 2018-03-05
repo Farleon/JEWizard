@@ -1,6 +1,5 @@
 package org.eclipse.che.sample.handler;
 
-import static org.eclipse.che.api.fs.server.WsPathUtils.resolve;
 import static org.eclipse.che.sample.shared.Constants.JUJU_PROJECT_TYPE_ID;
 import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
@@ -11,10 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import org.eclipse.che.api.core.ConflictException;
-import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.fs.server.FsManager;
-import org.eclipse.che.api.fs.server.WsPathUtils;
 import org.eclipse.che.api.project.server.handlers.CreateProjectHandler;
 import org.eclipse.che.api.project.server.type.AttributeValue;
 import org.eclipse.che.ide.api.project.MutableProjectConfig;
@@ -40,14 +37,11 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
     String location = p.getFileLocation();
 
     // Read extra info from config
-    try (InputStream packageJson = getClass().getClassLoader().getResourceAsStream(location);
-        InputStream personJson = getClass().getClassLoader().getResourceAsStream("files/test")) {
-      String projectWsPath = WsPathUtils.absolutize(projectPath);
-      fsManager.createFile(resolve(projectWsPath, FILE_NAME), packageJson);
-
-      String myJsonFilesWsPath = resolve(projectWsPath, "myJsonFiles");
-      fsManager.createFile(resolve(myJsonFilesWsPath, "Main.java"), personJson);
-    } catch (IOException | NotFoundException e) {
+    try (InputStream config =
+        getClass().getClassLoader().getResourceAsStream(location + "/config.json")) {
+      System.err.println(readFromInputStream(config));
+    } catch (Exception e) {
+      e.printStackTrace();
       throw new ServerException(e.getLocalizedMessage(), e);
     }
   }
@@ -58,7 +52,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   }
 
   public String readFromInputStream(InputStream is) {
-
+    System.err.println("try read");
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     int nRead;
     byte[] data = new byte[1024];

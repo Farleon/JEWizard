@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.fs.server.FsManager;
+import org.eclipse.che.api.fs.server.WsPathUtils;
 import org.eclipse.che.api.project.server.handlers.CreateProjectHandler;
 import org.eclipse.che.api.project.server.type.AttributeValue;
 import org.eclipse.che.ide.api.project.MutableProjectConfig;
@@ -38,18 +39,44 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
     String configString = "";
     // Read extra info from config
     try (InputStream config =
-        getClass().getClassLoader().getResourceAsStream(location + "/config.json")) {
+        getClass().getClassLoader().getResourceAsStream(location + "/config")) {
       configString = readFromInputStream(config);
     } catch (Exception e) {
       e.printStackTrace();
-      throw new ServerException(e.getLocalizedMessage(), e);
     }
-    // parse json
 
-    String[] lines = configString.split("\\r?\\n");
+    // read configfile + create folders and files
+    try {
+      String rootFolder = WsPathUtils.absolutize(projectPath);
+      String[] lines = configString.split("\\r?\\n");
 
-    for (int i = 0; i < lines.length; i++) {
-      System.err.println("Line " + i + ": " + lines[0]);
+      String[] folders = lines[0].split(",");
+
+      for (int i = 0; i < folders.length; i++) {
+        System.err.println("Create folder: " + folders[i]);
+        fsManager.createDir(WsPathUtils.resolve(rootFolder, folders[i]));
+      }
+      for (int i = 1; i < lines.length; i++) {
+        String[] parts = lines[i].split(":");
+        String file = parts[0];
+        String fileLocation = "";
+        if (parts.length == 2) fileLocation = parts[1];
+        System.err.println(file + " will be saved in " + fileLocation);
+        try (InputStream myfile =
+            getClass().getClassLoader().getResourceAsStream(location + "/" + file)) {
+          if (fileLocation != "") {
+            fsManager.createFile(
+                WsPathUtils.resolve(WsPathUtils.resolve(rootFolder, fileLocation), file), myfile);
+          } else {
+            fsManager.createFile(WsPathUtils.resolve(rootFolder, file), myfile);
+          }
+
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 

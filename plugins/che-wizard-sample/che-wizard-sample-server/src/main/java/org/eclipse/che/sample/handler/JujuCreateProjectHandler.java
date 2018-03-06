@@ -23,8 +23,7 @@ import org.eclipse.che.sample.shared.logic.Technology;
 public class JujuCreateProjectHandler extends MutableProjectConfig implements CreateProjectHandler {
 
   @Inject private FsManager fsManager;
-  private static final String FILE_NAME = "package.json";
-  TechnologyDAO dao;
+  private TechnologyDAO dao;
 
   @Override
   public void onCreateProject(
@@ -63,7 +62,9 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
         if (parts.length == 2) fileLocation = parts[1];
         System.err.println(file + " will be saved in " + fileLocation);
         try (InputStream myfile =
-            getClass().getClassLoader().getResourceAsStream(location + "/" + file)) {
+            getClass()
+                .getClassLoader()
+                .getResourceAsStream(location + "/" + fileLocation + "/" + file)) {
           if (fileLocation != "") {
             fsManager.createFile(
                 WsPathUtils.resolve(WsPathUtils.resolve(rootFolder, fileLocation), file), myfile);
@@ -94,10 +95,8 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
         buffer.write(data, 0, nRead);
       }
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
     try {
       buffer.flush();
     } catch (IOException e) {

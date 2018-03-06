@@ -1,4 +1,5 @@
-src,src/main,src/main/java,src/test,src/test/java
+src,src/main,src/main/java,src/main/resources,target,src/test,src/test/java
 Main.java:src/main/java
+arangodb.properties:src/main/resources
 pom.xml:
 

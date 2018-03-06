@@ -5,12 +5,16 @@ import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
 import com.google.inject.Inject;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.ServerException;
+import org.eclipse.che.api.core.util.CommandLine;
+import org.eclipse.che.api.core.util.ShellFactory;
 import org.eclipse.che.api.fs.server.FsManager;
 import org.eclipse.che.api.fs.server.WsPathUtils;
 import org.eclipse.che.api.project.server.handlers.CreateProjectHandler;
@@ -76,6 +80,21 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
           e.printStackTrace();
         }
       }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    CommandLine cmd = new CommandLine().add("ls");
+    final String[] line = new ShellFactory.StandardLinuxShell().createShellCommand(cmd);
+    try {
+      Process pr = Runtime.getRuntime().exec(line);
+      BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+      StringBuilder builder = new StringBuilder();
+      String lin = null;
+      while ((lin = in.readLine()) != null) {
+        builder.append(lin + "\n");
+      }
+      String result = builder.toString();
+      System.err.println(result);
     } catch (Exception e) {
       e.printStackTrace();
     }

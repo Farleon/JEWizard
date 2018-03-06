@@ -18,8 +18,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.eclipse.che.api.core.util.CommandLine;
-import org.eclipse.che.api.core.util.ShellFactory;
 import org.eclipse.che.sample.shared.dao.TechnologyDAO;
 
 public class SamplePageViewImpl implements SamplePageView {
@@ -47,8 +45,6 @@ public class SamplePageViewImpl implements SamplePageView {
     technologies.addItem("testopvulling2");
     technologies.addItem("testopvulling3");
     technologies.addItem("testopvulling4");
-    CommandLine cmd = new CommandLine().add("ls", "-l", "/home/andrew/some dir");
-    final String[] line = new ShellFactory.StandardLinuxShell().createShellCommand(cmd);
   }
 
   @UiHandler({"compilerVersion"})

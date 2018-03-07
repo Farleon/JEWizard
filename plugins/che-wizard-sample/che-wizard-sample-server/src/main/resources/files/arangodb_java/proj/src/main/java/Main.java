@@ -9,5 +9,11 @@ public class Main {
         InputStream in = Main.class.getResourceAsStream("arangodb.properties");
         ArangoDB arangoDB = new ArangoDB.Builder().loadProperties(in).build();
         
+        //Right click on the 'proj' folder and click on convert project. Convert the project to maven
+        
+        
+        //your code here
+        
+        
     }
 }

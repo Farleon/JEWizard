@@ -40,11 +40,6 @@ public class SamplePageViewImpl implements SamplePageView {
     for (String t : dao.getTechnologies().keySet()) {
       technologies.addItem(t);
     }
-    technologies.addItem("testopvulling");
-    technologies.addItem("testopvulling1");
-    technologies.addItem("testopvulling2");
-    technologies.addItem("testopvulling3");
-    technologies.addItem("testopvulling4");
   }
 
   @UiHandler({"compilerVersion"})

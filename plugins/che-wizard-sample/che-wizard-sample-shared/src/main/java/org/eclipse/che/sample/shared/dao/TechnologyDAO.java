@@ -15,15 +15,15 @@ public final class TechnologyDAO {
   }
 
   private void createSupported() {
-      //ArangoDB
+    // ArangoDB
     Technology arangodb = new Technology("ArangoDB");
     ProjectType arangodb_java = new ProjectType("Java Project", "/files/arangodb_java");
     ProjectType arangodb_foxx = new ProjectType("Foxx Microservice", "/files/arangodb_foxx");
     arangodb.addProjectType(arangodb_foxx);
     arangodb.addProjectType(arangodb_java);
     technologies.put("ArangoDB", arangodb);
-    
-    //Python Flask
+
+    // Python Flask
     Technology flask = new Technology("Python Flask");
     ProjectType flask_webapp = new ProjectType("Web Application", "/files/flask_webapp");
     flask.addProjectType(flask_webapp);

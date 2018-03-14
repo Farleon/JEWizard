@@ -49,6 +49,7 @@
             <groupId>org.eclipse.che.sample</groupId>
             <artifactId>plugin-wizard-shared</artifactId>
         </dependency>
+        
     </dependencies>
     <build>
         <plugins>

@@ -49,7 +49,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
     }
 
     // read configfile + create folders and files
-    try {
+  /*  try {
       String rootFolder = WsPathUtils.absolutize(projectPath);
       String[] lines = configString.split("\\r?\\n");
 
@@ -97,7 +97,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
       System.err.println(result);
     } catch (Exception e) {
       e.printStackTrace();
-    }
+    }*/
   }
 
   @Override

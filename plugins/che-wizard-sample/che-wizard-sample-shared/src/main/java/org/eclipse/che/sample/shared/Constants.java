@@ -25,6 +25,7 @@ public final class Constants {
 
   public static String PROJECT_TYPE = "projecttype";
   public static String TECHNOLOGY = "technology";
+  public static String DEPLOYGOAL = "deploy_goal";
 
   private Constants() {}
 }

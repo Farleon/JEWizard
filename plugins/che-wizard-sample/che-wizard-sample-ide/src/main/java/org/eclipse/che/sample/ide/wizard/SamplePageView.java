@@ -13,16 +13,16 @@ import org.eclipse.che.ide.api.mvp.View;
 @ImplementedBy(SamplePageViewImpl.class)
 public interface SamplePageView extends View<SamplePageView.ActionDelegate> {
 
-  String getCompilerVersion();
+  String getDeployGoal();
 
-  void setCompilerVersion(String version);
+  void setDeployGoal(String version);
 
   String getSelectedProjectType();
 
   String getSelectedTechnology();
 
   interface ActionDelegate {
-    void onCompilerVersionChanged();
+    void onDeployGoalChanged();
 
     void onProjectTypeChanged();
   }

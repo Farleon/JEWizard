@@ -25,7 +25,7 @@ public class SamplePageViewImpl implements SamplePageView {
   private ActionDelegate delegate;
   private final DockLayoutPanel rootElement;
   private final TechnologyDAO dao;
-  @UiField TextBox compilerVersion;
+  @UiField TextBox deployGoal;
   @UiField ListBox technologies;
   @UiField ListBox projecttypes;
 
@@ -42,9 +42,9 @@ public class SamplePageViewImpl implements SamplePageView {
     }
   }
 
-  @UiHandler({"compilerVersion"})
+  @UiHandler({"deployGoal"})
   void onKeyUp(KeyUpEvent event) {
-    delegate.onCompilerVersionChanged();
+    delegate.onDeployGoalChanged();
   }
 
   @UiHandler("technologies")
@@ -55,9 +55,6 @@ public class SamplePageViewImpl implements SamplePageView {
     for (String p : dao.getTechnologies().get(val).getProjectTypes().keySet()) {
       projecttypes.addItem(p);
     }
-    projecttypes.addItem(val + "testopvulling1");
-    projecttypes.addItem(index + "testopvulling2");
-    projecttypes.addItem(val + "testopvulling3");
     delegate.onProjectTypeChanged();
   }
 
@@ -78,13 +75,13 @@ public class SamplePageViewImpl implements SamplePageView {
   }
 
   @Override
-  public String getCompilerVersion() {
-    return compilerVersion.getText();
+  public String getDeployGoal() {
+    return deployGoal.getText();
   }
 
   @Override
-  public void setCompilerVersion(String version) {
-    compilerVersion.setText(version);
+  public void setDeployGoal(String version) {
+    deployGoal.setText(version);
   }
 
   public String getSelectedProjectType() {

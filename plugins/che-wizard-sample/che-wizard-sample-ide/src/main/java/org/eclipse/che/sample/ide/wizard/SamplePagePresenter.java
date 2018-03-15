@@ -7,7 +7,7 @@
  */
 package org.eclipse.che.sample.ide.wizard;
 
-import static org.eclipse.che.sample.shared.Constants.COMPILER_VERSION_ATRIBUTE;
+import static org.eclipse.che.sample.shared.Constants.DEPLOYGOAL;
 import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
@@ -38,18 +38,18 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
     super.init(dataObject);
     setAttribute(PROJECT_TYPE, "testPROJ2");
     setAttribute(TECHNOLOGY, "testTECH2");
-    setAttribute(COMPILER_VERSION_ATRIBUTE, "testCOMP2");
+    setAttribute(DEPLOYGOAL, "testCOMP2");
   }
 
   @Override
   public void go(AcceptsOneWidget container) {
     container.setWidget(view);
-    view.setCompilerVersion("This is a test123.");
+    view.setDeployGoal("arangodb");
   }
 
   @Override
-  public void onCompilerVersionChanged() {
-    setAttribute(COMPILER_VERSION_ATRIBUTE, view.getCompilerVersion());
+  public void onDeployGoalChanged() {
+    setAttribute(DEPLOYGOAL, view.getDeployGoal());
   }
 
   /** Sets single value of attribute of data-object. */

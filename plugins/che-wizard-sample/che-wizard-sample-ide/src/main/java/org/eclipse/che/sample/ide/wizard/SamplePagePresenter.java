@@ -17,6 +17,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.che.ide.api.app.AppContext;
 import org.eclipse.che.ide.api.project.MutableProjectConfig;
 import org.eclipse.che.ide.api.wizard.AbstractWizardPage;
 
@@ -25,11 +26,13 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
 
   protected final SamplePageView view;
   protected final EventBus eventBus;
+  protected final AppContext appContext;
 
   @Inject
-  public SamplePagePresenter(SamplePageView view, EventBus eventBus) {
+  public SamplePagePresenter(SamplePageView view, EventBus eventBus, AppContext appContext) {
     this.view = view;
     this.eventBus = eventBus;
+    this.appContext = appContext;
     view.setDelegate(this);
   }
 
@@ -44,7 +47,15 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
   @Override
   public void go(AcceptsOneWidget container) {
     container.setWidget(view);
-    view.setDeployGoal("arangodb");
+    view.setDeployGoal(
+        "The size is:"
+            + appContext
+                .getResources()[0]
+                .getRelatedProject()
+                .get()
+                .getAttributes()
+                .get("jujusupp")
+                .get(0));
   }
 
   @Override

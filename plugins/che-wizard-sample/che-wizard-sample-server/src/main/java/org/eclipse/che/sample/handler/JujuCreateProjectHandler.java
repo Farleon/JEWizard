@@ -5,8 +5,6 @@ import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
 import com.google.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.ServerException;
-import org.eclipse.che.api.core.util.CommandLine;
-import org.eclipse.che.api.core.util.ShellFactory;
 import org.eclipse.che.api.fs.server.FsManager;
 import org.eclipse.che.api.fs.server.WsPathUtils;
 import org.eclipse.che.api.project.server.ProjectManager;
@@ -27,6 +23,7 @@ import org.eclipse.che.api.workspace.shared.dto.CommandDto;
 import org.eclipse.che.dto.server.DtoFactory;
 import org.eclipse.che.ide.api.command.CommandImpl;
 import org.eclipse.che.ide.api.project.MutableProjectConfig;
+import org.eclipse.che.sample.commander.FileCommander;
 import org.eclipse.che.sample.shared.dao.TechnologyDAO;
 import org.eclipse.che.sample.shared.logic.ProjectType;
 import org.eclipse.che.sample.shared.logic.Technology;
@@ -48,8 +45,6 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
       String projectPath, Map<String, AttributeValue> attributes, Map<String, String> options)
       throws ConflictException, ServerException {
 
-    System.err.println(projectManager);
-    System.err.println(projectManager.getAll().size());
     // Get info from DAO
     dao = TechnologyDAO.getInstance();
     Technology t = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
@@ -59,7 +54,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
     // Read extra info from config
     try (InputStream config =
         getClass().getClassLoader().getResourceAsStream(location + "/config")) {
-      configString = readFromInputStream(config);
+      configString = FileCommander.readFromInputStream(config);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -91,53 +86,10 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
           } else {
             fsManager.createFile(WsPathUtils.resolve(rootFolder, file), myfile);
           }
-
         } catch (Exception e) {
           e.printStackTrace();
         }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    CommandLine cmd = new CommandLine().add("juju", "status");
-    final String[] line = new ShellFactory.StandardLinuxShell().createShellCommand(cmd);
-    try {
-      Process pr = Runtime.getRuntime().exec(line);
-      String result1 = readFromInputStream(pr.getErrorStream());
-      System.err.println(result1);
-      String result = readFromInputStream(pr.getInputStream());
-      String[] lines = result.split("\\r?\\n");
-      int i = 0;
-      while (i < lines.length && !lines[i].startsWith("Unit")) {
-        i++;
-      }
-      i++;
-      while (i < lines.length - 1 && !lines[i].startsWith("Machine")) {
-        lines[i] = lines[i].replaceAll("   *", "  ");
-
-        String[] blocks = lines[i].split("  ");
-        if (blocks.length > 5) {
-          String app = blocks[0];
-          String ip = blocks[4];
-          String port = "";
-          String msg = "";
-          if (blocks.length < 7) {
-            msg = blocks[5];
-          } else {
-            port = blocks[5].replaceAll("[^\\d.]", "");
-            msg = blocks[6];
-          }
-
-          System.err.println("APP: " + app);
-          System.err.println("Ip: " + ip);
-          System.err.println("Port: " + port);
-          System.err.println("Msg: " + msg);
-          System.err.println();
-        }
-
-        i++;
-      }
-
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -199,32 +151,11 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
     } catch (Exception e) {
       e.printStackTrace();
     }
+    System.err.println("ready");
   }
 
   @Override
   public String getProjectType() {
     return JUJU_PROJECT_TYPE_ID;
-  }
-
-  private String readFromInputStream(InputStream is) {
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    int nRead;
-    byte[] data = new byte[1024];
-    try {
-      while ((nRead = is.read(data, 0, data.length)) != -1) {
-        buffer.write(data, 0, nRead);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    try {
-      buffer.flush();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    byte[] byteArray = buffer.toByteArray();
-
-    String text = new String(byteArray);
-    return text;
   }
 }

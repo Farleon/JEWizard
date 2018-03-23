@@ -11,15 +11,21 @@ import static org.eclipse.che.sample.shared.Constants.DEPLOYGOAL;
 import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.che.ide.api.app.AppContext;
 import org.eclipse.che.ide.api.project.MutableProjectConfig;
 import org.eclipse.che.ide.api.wizard.AbstractWizardPage;
+import org.eclipse.che.sample.shared.functions.JujuFunctions;
+import org.eclipse.che.sample.shared.logic.ProjectType;
+import org.eclipse.che.sample.shared.logic.Technology;
 
 public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig>
     implements SamplePageView.ActionDelegate {
@@ -47,15 +53,54 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
   @Override
   public void go(AcceptsOneWidget container) {
     container.setWidget(view);
-    view.setDeployGoal(
-        "The size is:"
-            + appContext
-                .getResources()[0]
-                .getRelatedProject()
-                .get()
-                .getAttributes()
-                .get("jujusupp")
-                .get(0));
+
+    RequestBuilder requestBuilder =
+        new RequestBuilder(
+            RequestBuilder.GET,
+            "https://raw.githubusercontent.com/Farleon/ChePluginConstants/master/technologies.config");
+    try {
+      requestBuilder.sendRequest(
+          null,
+          new RequestCallback() {
+            public void onError(Request request, Throwable exception) {
+              view.setDeployGoal("no prok: " + exception.getMessage());
+            }
+
+            public void onResponseReceived(Request request, Response response) {
+              String result = response.getText();
+              HashMap<String, Technology> map = JujuFunctions.createJujuSupportMap(result);
+              for (String tstr : map.keySet()) {
+                for (String pstr : map.get(tstr).getProjectTypes().keySet()) {
+                  ProjectType p = map.get(tstr).getProjectTypes().get(pstr);
+                  RequestBuilder newRequestBuilder =
+                      new RequestBuilder(RequestBuilder.GET, p.getFileLocation());
+                  try {
+                    newRequestBuilder.sendRequest(
+                        null,
+                        new RequestCallback() {
+                          public void onError(Request request, Throwable exception) {
+                            view.setDeployGoal("no prok: " + exception.getMessage());
+                          }
+
+                          public void onResponseReceived(Request request, Response response) {
+                            String result = response.getText();
+
+                            ProjectType newp = JujuFunctions.extendProjectType(p, result);
+                            map.get(tstr).getProjectTypes().put(pstr, newp);
+                            view.setDeployGoal(view.getDeployGoal());
+                          }
+                        });
+                  } catch (RequestException e) {
+                    GWT.log("failed file reading", e);
+                  }
+                }
+              }
+              view.setTechnologies(map);
+            }
+          });
+    } catch (RequestException e) {
+      GWT.log("failed file reading", e);
+    }
   }
 
   @Override

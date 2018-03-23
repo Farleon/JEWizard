@@ -18,14 +18,16 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import java.util.HashMap;
 import org.eclipse.che.sample.shared.dao.TechnologyDAO;
+import org.eclipse.che.sample.shared.logic.Technology;
 
 public class SamplePageViewImpl implements SamplePageView {
 
   private ActionDelegate delegate;
   private final DockLayoutPanel rootElement;
   private final TechnologyDAO dao;
-  @UiField TextBox deployGoal;
+  @UiField ListBox deployGoal;
   @UiField ListBox technologies;
   @UiField ListBox projecttypes;
 
@@ -37,14 +39,7 @@ public class SamplePageViewImpl implements SamplePageView {
     dao = TechnologyDAO.getInstance();
     technologies.setVisibleItemCount(10);
     projecttypes.setVisibleItemCount(10);
-    for (String t : dao.getTechnologies().keySet()) {
-      technologies.addItem(t);
-    }
-  }
-
-  @UiHandler({"deployGoal"})
-  void onKeyUp(KeyUpEvent event) {
-    delegate.onDeployGoalChanged();
+    deployGoal.setVisibleItemCount(10);
   }
 
   @UiHandler("technologies")
@@ -60,7 +55,14 @@ public class SamplePageViewImpl implements SamplePageView {
 
   @UiHandler("projecttypes")
   void onChangeListBoxProj(ChangeEvent event) {
-    ;
+    int index = technologies.getSelectedIndex();
+    String val = technologies.getValue(index);
+    index = projecttypes.getSelectedIndex();
+    String val2 = projecttypes.getValue(index);
+    deploygoal.clear();
+    for (String p : dao.getTechnologies().get(val).getProjectTypes().get(val2).getDeployGoals()) {
+      projecttypes.addItem(p);
+    }
     delegate.onProjectTypeChanged();
   }
 
@@ -97,5 +99,13 @@ public class SamplePageViewImpl implements SamplePageView {
     int index = technologies.getSelectedIndex();
     String val = technologies.getValue(index);
     return val;
+  }
+
+  @Override
+  public void setTechnologies(HashMap<String, Technology> tech) {
+    dao.refillDao(tech);
+    for (String t : dao.getTechnologies().keySet()) {
+      technologies.addItem(t);
+    }
   }
 }

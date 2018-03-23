@@ -12,11 +12,9 @@ import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
 import com.google.inject.Inject;
-import java.util.ArrayList;
-import org.eclipse.che.api.project.server.type.AttributeValue;
 import org.eclipse.che.api.project.server.type.ProjectTypeDef;
-import org.eclipse.che.sample.commander.JujuApplication;
-import org.eclipse.che.sample.commander.JujuCommander;
+import org.eclipse.che.sample.shared.dao.*;
+import org.eclipse.che.sample.shared.logic.*;
 
 /**
  * C wizard type
@@ -24,6 +22,7 @@ import org.eclipse.che.sample.commander.JujuCommander;
  * @author Vitalii Parfonov
  */
 public class JujuProjectType extends ProjectTypeDef {
+
   @Inject
   public JujuProjectType() {
     super(JUJU_PROJECT_TYPE_ID, "Juju Project", true, false, true);
@@ -31,18 +30,9 @@ public class JujuProjectType extends ProjectTypeDef {
     // addVariableDefinition(DEPLOYGOAL, "deploy goal", false);
     addVariableDefinition(TECHNOLOGY, "technology", false);
 
-    AttributeValue av = new AttributeValue(new ArrayList<>());
-    for (String k : JujuCommander.getJujuSupported().keySet()) {
-      System.err.println(k);
-    }
-    for (JujuApplication jujuApp : JujuCommander.getJujuApplications()) {
-      av.getList().add(jujuApp.getSupportString());
-    }
-
-    addConstantDefinition("jujusuppconst", "jujusupp", av);
-    /*  attributes.put("jujusupp", v);
-
-    System.err.println(attributes.size());
-    System.err.println(attributes.get("jujusupp"));*/
+    Technology flask = new Technology("Python Flask2");
+    ProjectType flask_webapp = new ProjectType("Web Application2", "/files/flask_webapp");
+    flask.addProjectType(flask_webapp);
+    TechnologyDAO.getInstance().addTechnology("Python Flask2", flask);
   }
 }

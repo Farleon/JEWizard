@@ -14,6 +14,8 @@ public final class Constants {
   public static String JUJU_PROJECT_TYPE_ID = "jujuproject";
 
   public static String LANGUAGE = "language";
+  public static String MASTER_CONFIG_URL =
+      "https://raw.githubusercontent.com/Farleon/ChePluginConstants/master/technologies.config";
 
   public static String C_LANG = "c_lang";
 

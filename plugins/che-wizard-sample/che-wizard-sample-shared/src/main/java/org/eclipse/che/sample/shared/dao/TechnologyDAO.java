@@ -8,6 +8,7 @@ public final class TechnologyDAO {
 
   private static TechnologyDAO instance = new TechnologyDAO();
   private HashMap<String, Technology> technologies;
+  private String test;
 
   protected TechnologyDAO() {
     technologies = new HashMap<>();
@@ -30,11 +31,27 @@ public final class TechnologyDAO {
     technologies.put("Python Flask", flask);
   }
 
+  public void refillDao(HashMap<String, Technology> map) {
+    this.technologies = map;
+  }
+
   public static TechnologyDAO getInstance() {
     return instance;
   }
 
   public HashMap<String, Technology> getTechnologies() {
     return new HashMap<>(technologies);
+  }
+
+  public void addTechnology(String name, Technology t) {
+    technologies.put(name, t);
+  }
+
+  public String test() {
+    return test;
+  }
+
+  public void setTest(String test2) {
+    test = test2;
   }
 }

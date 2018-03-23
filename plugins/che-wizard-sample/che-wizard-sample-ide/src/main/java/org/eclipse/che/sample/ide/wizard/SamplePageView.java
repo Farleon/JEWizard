@@ -8,7 +8,9 @@
 package org.eclipse.che.sample.ide.wizard;
 
 import com.google.inject.ImplementedBy;
+import java.util.HashMap;
 import org.eclipse.che.ide.api.mvp.View;
+import org.eclipse.che.sample.shared.logic.Technology;
 
 @ImplementedBy(SamplePageViewImpl.class)
 public interface SamplePageView extends View<SamplePageView.ActionDelegate> {
@@ -20,6 +22,8 @@ public interface SamplePageView extends View<SamplePageView.ActionDelegate> {
   String getSelectedProjectType();
 
   String getSelectedTechnology();
+
+  void setTechnologies(HashMap<String, Technology> tech);
 
   interface ActionDelegate {
     void onDeployGoalChanged();

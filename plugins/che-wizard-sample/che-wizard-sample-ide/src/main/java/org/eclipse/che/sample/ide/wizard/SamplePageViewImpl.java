@@ -9,13 +9,11 @@ package org.eclipse.che.sample.ide.wizard;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -43,6 +41,11 @@ public class SamplePageViewImpl implements SamplePageView {
   }
 
   @UiHandler("technologies")
+  void onChangeListBoxDeploy(ChangeEvent event) {
+    delegate.onDeployGoalChanged();
+  }
+
+  @UiHandler("technologies")
   void onChangeListBoxTech(ChangeEvent event) {
     int index = technologies.getSelectedIndex();
     String val = technologies.getValue(index);
@@ -59,9 +62,10 @@ public class SamplePageViewImpl implements SamplePageView {
     String val = technologies.getValue(index);
     index = projecttypes.getSelectedIndex();
     String val2 = projecttypes.getValue(index);
-    deploygoal.clear();
-    for (String p : dao.getTechnologies().get(val).getProjectTypes().get(val2).getDeployGoals()) {
-      projecttypes.addItem(p);
+    deployGoal.clear();
+    for (String p :
+        dao.getTechnologies().get(val).getProjectTypes().get(val2).getDeployGoals().keySet()) {
+      deployGoal.addItem(p);
     }
     delegate.onProjectTypeChanged();
   }
@@ -78,12 +82,14 @@ public class SamplePageViewImpl implements SamplePageView {
 
   @Override
   public String getDeployGoal() {
-    return deployGoal.getText();
+    int index = deployGoal.getSelectedIndex();
+    String val = deployGoal.getValue(index);
+    return val;
   }
 
   @Override
   public void setDeployGoal(String version) {
-    deployGoal.setText(version);
+    deployGoal.addItem(version);
   }
 
   public String getSelectedProjectType() {

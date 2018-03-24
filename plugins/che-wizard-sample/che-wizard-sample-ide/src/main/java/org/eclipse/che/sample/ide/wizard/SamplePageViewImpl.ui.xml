@@ -23,15 +23,18 @@
         .box{
             margin-right: 10px;
         }
+        .column{
+            width: 250px;
+        }
     </ui:style>
     <g:DockLayoutPanel width="100%" height="100%" addStyleNames="{style.mainDoc}">
         <g:north size="100">
             <g:VerticalPanel>
                 <g:HorizontalPanel addStyleNames="{style.line}">
-                    <g:Label text="To use plugin you must first register Juju. Otherwise you will not be able to obtain full functionality." />
+                    <g:Label addStyleNames="{style.column}" text="To use plugin you must first register Juju. Otherwise you will not be able to obtain full functionality." />
                 </g:HorizontalPanel>
                 <g:HorizontalPanel addStyleNames="{style.line}">
-                    <g:Label text="Select component to support:" />
+                    <g:Label addStyleNames="{style.column}" text="Select component to support:" />
                      <g:ListBox ui:field='technologies' addStyleNames="{style.box}" />
                      <g:ListBox ui:field='projecttypes' addStyleNames="{style.box}"/>
                 </g:HorizontalPanel>

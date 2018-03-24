@@ -35,32 +35,35 @@ public class JujuFunctions {
       if (config != null && config != "") {
         String[] lines = config.split("\\r?\\n");
         int i = 0;
-        while (i < lines.length && !lines[i].startsWith("START_OF_FOLDERS") && i < lines.length)
-          i++;
+        while (i < lines.length && !lines[i].startsWith("START_OF_FOLDERS")) i++;
         i++;
-        while (i < lines.length && !lines[i].startsWith("END_OF_FOLDERS") && i < lines.length) {
+        while (i < lines.length && !lines[i].startsWith("END_OF_FOLDERS")) {
           p.addFolder(lines[i++]);
         }
         while (i < lines.length && !lines[i].startsWith("START_OF_FILES")) i++;
         i++;
-        while (i < lines.length && !lines[i].startsWith("END_OF_FILES") && i < lines.length) {
+        while (i < lines.length && !lines[i].startsWith("END_OF_FILES")) {
           String[] parts = lines[i++].split(":::");
           p.addFile(parts[0], parts[1]);
         }
-        while (i < lines.length && !lines[i].startsWith("START_OF_DEPLOYGOALS") && i < lines.length)
-          i++;
+        while (i < lines.length && !lines[i].startsWith("START_OF_DEPLOYGOALS")) i++;
         i++;
         while (i < lines.length && !lines[i].startsWith("END_OF_DEPLOYGOALS")) {
           String[] parts = lines[i++].split(":::");
           p.addDeploygoal(parts[0], parts[1]);
         }
+        while (i < lines.length && !lines[i].startsWith("START_OF_CONFIG_VARIABLES")) i++;
+        i++;
+        while (i < lines.length && !lines[i].startsWith("END_OF_CONFIG_VARIABLES")) {
+          String[] parts = lines[i++].split(":::");
+          p.addConfigVariable(parts[0], parts[1]);
+        }
+
         while (i < lines.length
             && !lines[i].startsWith("START_OF_CONFIG_FILES")
             && i < lines.length) i++;
         i++;
-        while (i < lines.length
-            && !lines[i].startsWith("END_OF_CONFIG_FILES")
-            && i < lines.length) {
+        while (i < lines.length && !lines[i].startsWith("END_OF_CONFIG_FILES")) {
           String[] parts = lines[i++].split(":::");
           p.addConfigFile(parts[0], parts[1]);
         }

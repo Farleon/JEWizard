@@ -1,14 +1,19 @@
 package org.eclipse.che.sample.handler;
 
+import static org.eclipse.che.sample.shared.Constants.DEPLOYGOAL;
 import static org.eclipse.che.sample.shared.Constants.JUJU_PROJECT_TYPE_ID;
 import static org.eclipse.che.sample.shared.Constants.MASTER_CONFIG_URL;
 import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
 
 import com.google.inject.Inject;
+
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
+
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.fs.server.FsManager;
@@ -18,6 +23,7 @@ import org.eclipse.che.api.project.server.handlers.CreateProjectHandler;
 import org.eclipse.che.api.project.server.type.AttributeValue;
 import org.eclipse.che.dto.server.DtoFactory;
 import org.eclipse.che.ide.api.project.MutableProjectConfig;
+import org.eclipse.che.sample.commander.JujuCommander;
 import org.eclipse.che.sample.commander.UrlCommander;
 import org.eclipse.che.sample.shared.dao.TechnologyDAO;
 import org.eclipse.che.sample.shared.functions.JujuFunctions;
@@ -30,6 +36,9 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   private final ProjectManager projectManager;
   protected static final DtoFactory dtoFactory = DtoFactory.getInstance();
   private TechnologyDAO dao;
+  private String deployGoal;
+  private Technology technology;
+  private ProjectType projectType;
 
   @Inject
   public JujuCreateProjectHandler(ProjectManager pm) {
@@ -50,35 +59,43 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
       String projectPath, Map<String, AttributeValue> attributes, Map<String, String> options)
       throws ConflictException, ServerException {
 
+    deployGoal = attributes.get(DEPLOYGOAL).getString();
     // Get info from DAO
-    Technology t = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
-    ProjectType p = t.getProjectTypes().get(attributes.get(PROJECT_TYPE).getString());
-    System.err.println(Arrays.toString(p.getDeployGoals().keySet().toArray()));
-    System.err.println(Arrays.toString(p.getFiles().keySet().toArray()));
-    System.err.println(Arrays.toString(p.getFolders().toArray()));
-    System.err.println(Arrays.toString(p.getConfigFiles().keySet().toArray()));
+    technology = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
+    projectType = technology.getProjectTypes().get(attributes.get(PROJECT_TYPE).getString());
 
     String rootFolder = WsPathUtils.absolutize(projectPath);
     // Create folders
-      for (String folder : p.getFolders()) {
-        try {
+    for (String folder : projectType.getFolders()) {
+      try {
         fsManager.createDir(WsPathUtils.resolve(rootFolder, folder));
-        } catch (Exception e) {
-          System.err.println("Could not create folder: " + folder);
-        }
+      } catch (Exception e) {
+        System.err.println("Could not create folder: " + folder);
       }
-    
+    }
 
-    //Create files
-      for (String file : p.getFiles().keySet()) {
-        try {
-            InputStream myFile = UrlCommander.readFilestream(p.getFiles().get(file));
-            fsManager.createFile(WsPathUtils.resolve(rootFolder, file), myFile); } 
-        catch (Exception e) {
-            System.err.println("Could not create file:" + file);
-        }
+    // Create files
+    for (String file : projectType.getFiles().keySet()) {
+      try {
+        InputStream myFile = UrlCommander.readFilestream(p.getFiles().get(file));
+        fsManager.createFile(WsPathUtils.resolve(rootFolder, file), myFile);
+      } catch (Exception e) {
+        System.err.println("Could not create file:" + file);
       }
-   
+    }
+
+    // Create configfiles
+    for (String file : projectType.getConfigFiles().keySet()) {
+      try {
+        String configContent = UrlCommander.readFile(projectType.getConfigFiles().get(file));
+        String configContentFilled = fillConfig(configContent);
+        InputStream stream =
+            new ByteArrayInputStream(configContentFilled.getBytes(StandardCharsets.UTF_8));
+        fsManager.createFile(WsPathUtils.resolve(rootFolder, file), stream);
+      } catch (Exception e) {
+        System.err.println("Could not create file:" + file);
+      }
+    }
 
     /*    // adding commands to the project attributes
     List<String> attrValue = new ArrayList<>(attributes.size());
@@ -138,6 +155,26 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
       e.printStackTrace();
     }*/
     System.err.println("ready");
+  }
+
+  private String fillConfig(String configContent) {
+    System.err.println("Keyset" + projectType.getConfigVariables().keySet());
+    System.err.println("Keyset size" + projectType.getConfigVariables().keySet().size());
+    for (String var : projectType.getConfigVariables().keySet()) {
+      try {
+        System.err.println("::" + var + "::");
+        if (projectType.getConfigVariables().get(var).equals("JUJU_AUTOFILL")) {
+          //  JujuCommander.fillConfigVariables(deployGoal);
+        }
+
+        configContent =
+            configContent.replaceAll("::" + var + "::", projectType.getConfigVariables().get(var));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    System.err.println(configContent);
+    return configContent;
   }
 
   @Override

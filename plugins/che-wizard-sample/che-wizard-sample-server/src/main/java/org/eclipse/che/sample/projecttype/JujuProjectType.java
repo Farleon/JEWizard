@@ -7,6 +7,7 @@
  */
 package org.eclipse.che.sample.projecttype;
 
+import static org.eclipse.che.sample.shared.Constants.DEPLOYGOAL;
 import static org.eclipse.che.sample.shared.Constants.JUJU_PROJECT_TYPE_ID;
 import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
 import static org.eclipse.che.sample.shared.Constants.TECHNOLOGY;
@@ -27,7 +28,7 @@ public class JujuProjectType extends ProjectTypeDef {
   public JujuProjectType() {
     super(JUJU_PROJECT_TYPE_ID, "Juju Project", true, false, true);
     addVariableDefinition(PROJECT_TYPE, "Project type", false);
-    // addVariableDefinition(DEPLOYGOAL, "deploy goal", false);
+    addVariableDefinition(DEPLOYGOAL, "deploy goal", false);
     addVariableDefinition(TECHNOLOGY, "technology", false);
 
     Technology flask = new Technology("Python Flask2");

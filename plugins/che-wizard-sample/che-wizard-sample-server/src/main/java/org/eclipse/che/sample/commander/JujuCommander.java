@@ -7,9 +7,10 @@ import org.eclipse.che.sample.shared.logic.JujuApplication;
 
 public class JujuCommander {
 
+   private static ArrayList<JujuApplication> apps;
+    
   public static ArrayList<JujuApplication> getJujuApplications() {
-    ArrayList<JujuApplication> apps = new ArrayList<>();
-
+    apps = new ArrayList<>();
     CommandLine cmd = new CommandLine().add("juju", "status");
     final String[] line = new ShellFactory.StandardLinuxShell().createShellCommand(cmd);
     try {
@@ -53,4 +54,14 @@ public class JujuCommander {
     }
     return apps;
   }
+  /*
+  public static void fillConfigVariables(String String deploygoal){
+      if(apps==null)
+        getJujuApplications();
+       for(JujuApplication app : apps){
+           if(app.getName().equals(deploygoal)){
+               
+           }
+       } 
+  }*/
 }

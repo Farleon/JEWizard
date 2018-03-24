@@ -12,24 +12,27 @@ public class UrlCommander {
 
   public static String readFile(String link) {
     try {
-      URL url = new URL(link);
-      HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
-      Map<String, List<String>> headers = httpConnection.getHeaderFields();
+      if (link.length() > 5) {
+        URL url = new URL(link);
+        HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
+        Map<String, List<String>> headers = httpConnection.getHeaderFields();
 
-      // If URL is getting 301 and 302 redirection HTTP code then get new URL link.
-      // This below for loop is totally optional if you are sure that your URL is not getting
-      // redirected to anywhere
-      for (String header : headers.get(null)) {
-        if (header.contains(" 302 ") || header.contains(" 301 ")) {
-          link = headers.get("Location").get(0);
-          url = new URL(link);
-          httpConnection = (HttpURLConnection) url.openConnection();
-          headers = httpConnection.getHeaderFields();
+        // If URL is getting 301 and 302 redirection HTTP code then get new URL link.
+        // This below for loop is totally optional if you are sure that your URL is not getting
+        // redirected to anywhere
+        for (String header : headers.get(null)) {
+          if (header.contains(" 302 ") || header.contains(" 301 ")) {
+            link = headers.get("Location").get(0);
+            url = new URL(link);
+            httpConnection = (HttpURLConnection) url.openConnection();
+            headers = httpConnection.getHeaderFields();
+          }
         }
+        InputStream stream = httpConnection.getInputStream();
+        String content = readFromInputStream(stream);
+        return content;
       }
-      InputStream stream = httpConnection.getInputStream();
-      String content = readFromInputStream(stream);
-      return content;
+
     } catch (Exception e) {
       System.err.println("Could not get content from link: " + link);
       e.printStackTrace();
@@ -39,23 +42,26 @@ public class UrlCommander {
 
   public static InputStream readFilestream(String link) {
     try {
-      URL url = new URL(link);
-      HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
-      Map<String, List<String>> headers = httpConnection.getHeaderFields();
+      if (link.length() > 5) {
+        URL url = new URL(link);
+        HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
+        Map<String, List<String>> headers = httpConnection.getHeaderFields();
 
-      // If URL is getting 301 and 302 redirection HTTP code then get new URL link.
-      // This below for loop is totally optional if you are sure that your URL is not getting
-      // redirected to anywhere
-      for (String header : headers.get(null)) {
-        if (header.contains(" 302 ") || header.contains(" 301 ")) {
-          link = headers.get("Location").get(0);
-          url = new URL(link);
-          httpConnection = (HttpURLConnection) url.openConnection();
-          headers = httpConnection.getHeaderFields();
+        // If URL is getting 301 and 302 redirection HTTP code then get new URL link.
+        // This below for loop is totally optional if you are sure that your URL is not getting
+        // redirected to anywhere
+        for (String header : headers.get(null)) {
+          if (header.contains(" 302 ") || header.contains(" 301 ")) {
+            link = headers.get("Location").get(0);
+            url = new URL(link);
+            httpConnection = (HttpURLConnection) url.openConnection();
+            headers = httpConnection.getHeaderFields();
+          }
         }
+        InputStream stream = httpConnection.getInputStream();
+        return stream;
       }
-      InputStream stream = httpConnection.getInputStream();
-      return stream;
+
     } catch (Exception e) {
       System.err.println("Could not get content from link: " + link);
       e.printStackTrace();

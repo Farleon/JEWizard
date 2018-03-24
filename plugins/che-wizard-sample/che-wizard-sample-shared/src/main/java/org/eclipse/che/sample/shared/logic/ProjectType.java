@@ -7,10 +7,11 @@ public class ProjectType {
 
   private String name;
   private String fileLocation;
-  private HashMap<String, String> deploygoals;
+  private HashMap<String, String> deploygoals; // map deployname on link with commands
   private ArrayList<String> folders;
   private HashMap<String, String> files;
   private HashMap<String, String> configFiles;
+  private HashMap<String, String> configVariables;
 
   public ProjectType(String name, String fileLocation) {
     this.name = name;
@@ -19,6 +20,7 @@ public class ProjectType {
     this.folders = new ArrayList<>();
     this.files = new HashMap<>();
     this.configFiles = new HashMap<>();
+    this.configVariables = new HashMap<>();
   }
 
   public String getName() {
@@ -49,6 +51,10 @@ public class ProjectType {
     return deploygoals;
   }
 
+  public HashMap<String, String> getConfigVariables() {
+    return configVariables;
+  }
+
   public void addDeploygoal(String goal, String location) {
     deploygoals.put(goal, location);
   }
@@ -59,6 +65,10 @@ public class ProjectType {
 
   public void addConfigFile(String file, String location) {
     configFiles.put(file, location);
+  }
+
+  public void addConfigVariable(String variable, String value) {
+    configVariables.put(variable, value);
   }
 
   public void addFolder(String goal) {

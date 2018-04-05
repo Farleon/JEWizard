@@ -48,6 +48,7 @@ public class SamplePagePresenter extends AbstractWizardPage<MutableProjectConfig
     setAttribute(PROJECT_TYPE, "testPROJ2");
     setAttribute(TECHNOLOGY, "testTECH2");
     setAttribute(DEPLOYGOAL, "testCOMP2");
+    setAttribute("workspaceid", appContext.getWorkspaceId());
   }
 
   @Override

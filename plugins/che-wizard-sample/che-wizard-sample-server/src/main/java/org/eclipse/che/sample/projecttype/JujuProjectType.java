@@ -31,6 +31,8 @@ public class JujuProjectType extends ProjectTypeDef {
     addVariableDefinition(DEPLOYGOAL, "deploy goal", false);
     addVariableDefinition(TECHNOLOGY, "technology", false);
 
+    addVariableDefinition("workspaceid", "workspaceid", false);
+
     Technology flask = new Technology("Python Flask2");
     ProjectType flask_webapp = new ProjectType("Web Application2", "/files/flask_webapp");
     flask.addProjectType(flask_webapp);

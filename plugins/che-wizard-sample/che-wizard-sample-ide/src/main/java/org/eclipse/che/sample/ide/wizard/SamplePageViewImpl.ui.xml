@@ -31,7 +31,7 @@
         <g:north size="100">
             <g:VerticalPanel>
                 <g:HorizontalPanel addStyleNames="{style.line}">
-                    <g:Label addStyleNames="{style.column}" text="To use plugin you must first register Juju. Otherwise you will not be able to obtain full functionality." />
+                    <g:Label text="To use plugin you must first register Juju. Otherwise you will not be able to obtain full functionality." />
                 </g:HorizontalPanel>
                 <g:HorizontalPanel addStyleNames="{style.line}">
                     <g:Label addStyleNames="{style.column}" text="Select component to support:" />
@@ -39,7 +39,7 @@
                      <g:ListBox ui:field='projecttypes' addStyleNames="{style.box}"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel addStyleNames="{style.line}">
-                    <g:Label text="Deploy to (juju unit name):" />
+                    <g:Label  addStyleNames="{style.column}" text="Deploy to (juju unit name):" />
                     <g:ListBox width="500px" ui:field="deployGoal"/>
                 </g:HorizontalPanel>
             </g:VerticalPanel>

@@ -1,6 +1,7 @@
 package org.eclipse.che.sample.handler;
 
 import static org.eclipse.che.sample.shared.Constants.DEPLOYGOAL;
+import static org.eclipse.che.sample.shared.Constants.ECLIPSE_IP;
 import static org.eclipse.che.sample.shared.Constants.JUJU_PROJECT_TYPE_ID;
 import static org.eclipse.che.sample.shared.Constants.MASTER_CONFIG_URL;
 import static org.eclipse.che.sample.shared.Constants.PROJECT_TYPE;
@@ -50,6 +51,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   public void onCreateProject(
       String projectPath, Map<String, AttributeValue> attributes, Map<String, String> options)
       throws ConflictException, ServerException {
+
     deployGoal = attributes.get(DEPLOYGOAL).getString();
     // Get info from DAO
     technology = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
@@ -82,9 +84,8 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
     for (String file : projectType.getConfigFiles().keySet()) {
       try {
         String configContent = UrlCommander.readFile(projectType.getConfigFiles().get(file));
-        String configContentFilled = fillConfig(configContent);
-        InputStream stream =
-            new ByteArrayInputStream(configContentFilled.getBytes(StandardCharsets.UTF_8));
+        String filled = fillConfig(configContent);
+        InputStream stream = new ByteArrayInputStream(filled.getBytes(StandardCharsets.UTF_8));
         fsManager.createFile(WsPathUtils.resolve(rootFolder, file), stream);
       } catch (Exception e) {
         System.err.println("Could not create file:" + file);
@@ -93,27 +94,29 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
 
     // Create commands
     for (String deploygoalCommands : projectType.getDeployGoals().values()) {
-      System.out.println();
-      String command = UrlCommander.readFile(deploygoalCommands);
-      String prefix =
-          "curl -i -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '";
-      String suffix =
-          "' 'http://10.10.138.133:8080/api/workspace/"
-              + attributes.get("workspaceid").getString()
-              + "/command'";
+      for (String command : UrlCommander.readFile(deploygoalCommands).trim().split("\\r?\\n")) {
+        String prefix =
+            "curl -i -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '";
+        String suffix =
+            "' '"
+                + ECLIPSE_IP
+                + "/api/workspace/"
+                + attributes.get("workspaceid").getString()
+                + "/command'";
 
-      final String[] line = new String[3];
-      line[0] = "/bin/bash";
-      line[1] = "-cl";
-      line[2] = prefix.trim() + command.trim() + suffix.trim();
-      try {
-        Process pr = Runtime.getRuntime().exec(line);
-        String result = UrlCommander.readFromInputStream(pr.getInputStream());
-        String result2 = UrlCommander.readFromInputStream(pr.getErrorStream());
-        System.err.println(result);
-        System.err.println(result2);
-      } catch (Exception e) {
+        final String[] line = new String[3];
+        line[0] = "/bin/bash";
+        line[1] = "-cl";
+        line[2] = prefix.trim() + command.trim() + suffix.trim();
+        try {
+          Process pr = Runtime.getRuntime().exec(line);
+          String result = UrlCommander.readFromInputStream(pr.getInputStream());
+          String result2 = UrlCommander.readFromInputStream(pr.getErrorStream());
+          System.err.println(result);
+          System.err.println(result2);
+        } catch (Exception e) {
 
+        }
       }
     }
 
@@ -121,15 +124,8 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   }
 
   private String fillConfig(String configContent) {
-    System.err.println("Keyset" + projectType.getConfigVariables().keySet());
-    System.err.println("Keyset size" + projectType.getConfigVariables().keySet().size());
     for (String var : projectType.getConfigVariables().keySet()) {
       try {
-        System.err.println("::" + var + "::");
-        if (projectType.getConfigVariables().get(var).equals("JUJU_AUTOFILL")) {
-          //  JujuCommander.fillConfigVariables(deployGoal);
-        }
-
         configContent =
             configContent.replaceAll("::" + var + "::", projectType.getConfigVariables().get(var));
       } catch (Exception e) {

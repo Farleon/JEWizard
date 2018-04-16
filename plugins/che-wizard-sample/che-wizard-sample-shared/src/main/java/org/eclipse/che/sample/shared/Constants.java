@@ -25,6 +25,8 @@ public final class Constants {
 
   public static String COMPILER_VERSION_ATRIBUTE = "compiler_version";
 
+  public static String ECLIPSE_IP = "http://10.10.138.133:8080";
+
   public static String PROJECT_TYPE = "projecttype";
   public static String TECHNOLOGY = "technology";
   public static String DEPLOYGOAL = "deploy_goal";

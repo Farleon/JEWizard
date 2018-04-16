@@ -54,14 +54,4 @@ public class JujuCommander {
     }
     return apps;
   }
-  /*
-  public static void fillConfigVariables(String String deploygoal){
-      if(apps==null)
-        getJujuApplications();
-       for(JujuApplication app : apps){
-           if(app.getName().equals(deploygoal)){
-
-           }
-       }
-  }*/
 }

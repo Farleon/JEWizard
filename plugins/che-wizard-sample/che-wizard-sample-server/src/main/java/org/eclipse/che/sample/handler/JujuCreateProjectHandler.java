@@ -51,73 +51,67 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   public void onCreateProject(
       String projectPath, Map<String, AttributeValue> attributes, Map<String, String> options)
       throws ConflictException, ServerException {
-
-    deployGoal = attributes.get(DEPLOYGOAL).getString();
-    // Get info from DAO
-    technology = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
-    projectType = technology.getProjectTypes().get(attributes.get(PROJECT_TYPE).getString());
-    for (String k : attributes.keySet()) {
-      System.err.println(k);
-    }
-    System.err.println("Workspaceid: " + attributes.get("workspaceid").getString());
-    String rootFolder = WsPathUtils.absolutize(projectPath);
-    // Create folders
-    for (String folder : projectType.getFolders()) {
-      try {
-        fsManager.createDir(WsPathUtils.resolve(rootFolder, folder));
-      } catch (Exception e) {
-        System.err.println("Could not create folder: " + folder);
+    try {
+      deployGoal = attributes.get(DEPLOYGOAL).getString();
+      // Get info from DAO
+      technology = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
+      projectType = technology.getProjectTypes().get(attributes.get(PROJECT_TYPE).getString());
+      for (String k : attributes.keySet()) {
+        System.err.println(k);
       }
-    }
-
-    // Create files
-    for (String file : projectType.getFiles().keySet()) {
-      try {
-        InputStream myFile = UrlCommander.readFilestream(projectType.getFiles().get(file));
-        fsManager.createFile(WsPathUtils.resolve(rootFolder, file), myFile);
-      } catch (Exception e) {
-        System.err.println("Could not create file:" + file);
-      }
-    }
-
-    // Create configfiles
-    for (String file : projectType.getConfigFiles().keySet()) {
-      try {
-        String configContent = UrlCommander.readFile(projectType.getConfigFiles().get(file));
-        String filled = fillConfig(configContent);
-        InputStream stream = new ByteArrayInputStream(filled.getBytes(StandardCharsets.UTF_8));
-        fsManager.createFile(WsPathUtils.resolve(rootFolder, file), stream);
-      } catch (Exception e) {
-        System.err.println("Could not create file:" + file);
-      }
-    }
-
-    // Create commands
-    for (String deploygoalCommands : projectType.getDeployGoals().values()) {
-      for (String command : UrlCommander.readFile(deploygoalCommands).trim().split("\\r?\\n")) {
-        String prefix =
-            "curl -i -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '";
-        String suffix =
-            "' '"
-                + ECLIPSE_IP
-                + "/api/workspace/"
-                + attributes.get("workspaceid").getString()
-                + "/command'";
-
-        final String[] line = new String[3];
-        line[0] = "/bin/bash";
-        line[1] = "-cl";
-        line[2] = prefix.trim() + command.trim() + suffix.trim();
+      System.err.println("Workspaceid: " + attributes.get("workspaceid").getString());
+      String rootFolder = WsPathUtils.absolutize(projectPath);
+      // Create folders
+      for (String folder : projectType.getFolders()) {
         try {
-          Process pr = Runtime.getRuntime().exec(line);
-          String result = UrlCommander.readFromInputStream(pr.getInputStream());
-          String result2 = UrlCommander.readFromInputStream(pr.getErrorStream());
-          System.err.println(result);
-          System.err.println(result2);
+          fsManager.createDir(WsPathUtils.resolve(rootFolder, folder));
         } catch (Exception e) {
-
+          System.err.println("Could not create folder: " + folder);
         }
       }
+
+      // Create configfiles
+      for (String file : projectType.getFiles().keySet()) {
+        try {
+          String configContent = UrlCommander.readFile(projectType.getConfigFiles().get(file));
+          String filled = fillConfig(configContent);
+          InputStream stream = new ByteArrayInputStream(filled.getBytes(StandardCharsets.UTF_8));
+          fsManager.createFile(WsPathUtils.resolve(rootFolder, file), stream);
+        } catch (Exception e) {
+          System.err.println("Could not create file:" + file);
+        }
+      }
+
+      // Create commands
+      for (String deploygoalCommands : projectType.getDeployGoals().values()) {
+        for (String command : UrlCommander.readFile(deploygoalCommands).trim().split("\\r?\\n")) {
+          command = fillConfig(command);
+          String prefix =
+              "curl -i -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '";
+          String suffix =
+              "' '"
+                  + ECLIPSE_IP
+                  + "/api/workspace/"
+                  + attributes.get("workspaceid").getString()
+                  + "/command'";
+
+          final String[] line = new String[3];
+          line[0] = "/bin/bash";
+          line[1] = "-cl";
+          line[2] = prefix.trim() + command.trim() + suffix.trim();
+          try {
+            Process pr = Runtime.getRuntime().exec(line);
+            String result = UrlCommander.readFromInputStream(pr.getInputStream());
+            String result2 = UrlCommander.readFromInputStream(pr.getErrorStream());
+            System.err.println(result);
+            System.err.println(result2);
+          } catch (Exception e) {
+            System.err.println("Could not do the request");
+          }
+        }
+      }
+    } catch (Exception e) {
+      System.err.println("U got urself a mistake somewhere");
     }
 
     System.err.println("ready");

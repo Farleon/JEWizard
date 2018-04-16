@@ -12,7 +12,7 @@ public final class TechnologyDAO {
 
   protected TechnologyDAO() {
     technologies = new HashMap<>();
-    createSupported();
+    // createSupported();
   }
 
   private void createSupported() {

@@ -35,7 +35,6 @@ public class UrlCommander {
 
     } catch (Exception e) {
       System.err.println("Could not get content from link: " + link);
-      e.printStackTrace();
     }
     return null;
   }
@@ -64,30 +63,35 @@ public class UrlCommander {
 
     } catch (Exception e) {
       System.err.println("Could not get content from link: " + link);
-      e.printStackTrace();
     }
     return null;
   }
 
   public static String readFromInputStream(InputStream is) {
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    int nRead;
-    byte[] data = new byte[1024];
+    String text = "";
     try {
-      while ((nRead = is.read(data, 0, data.length)) != -1) {
-        buffer.write(data, 0, nRead);
+      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+      int nRead;
+      byte[] data = new byte[1024];
+      try {
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+          buffer.write(data, 0, nRead);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    try {
-      buffer.flush();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    byte[] byteArray = buffer.toByteArray();
+      try {
+        buffer.flush();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      byte[] byteArray = buffer.toByteArray();
 
-    String text = new String(byteArray);
+      text = new String(byteArray);
+    } catch (Exception e) {
+      System.err.println("Could not read inputstream: " + is.toString());
+    }
+
     return text;
   }
 }

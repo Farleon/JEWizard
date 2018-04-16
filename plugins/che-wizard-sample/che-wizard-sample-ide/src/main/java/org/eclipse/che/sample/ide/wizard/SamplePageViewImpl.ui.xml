@@ -39,7 +39,7 @@
                      <g:ListBox ui:field='projecttypes' addStyleNames="{style.box}"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel addStyleNames="{style.line}">
-                    <g:Label  addStyleNames="{style.column}" text="Deploy to (juju unit name):" />
+                    <g:Label  addStyleNames="{style.column}" text="Deploy to:" />
                     <g:ListBox width="500px" ui:field="deployGoal"/>
                 </g:HorizontalPanel>
             </g:VerticalPanel>

@@ -70,10 +70,10 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
         }
       }
 
-      // Create configfiles
+      // Create files
       for (String file : projectType.getFiles().keySet()) {
         try {
-          String configContent = UrlCommander.readFile(projectType.getConfigFiles().get(file));
+          String configContent = UrlCommander.readFile(projectType.getFiles().get(file));
           String filled = fillConfig(configContent);
           InputStream stream = new ByteArrayInputStream(filled.getBytes(StandardCharsets.UTF_8));
           fsManager.createFile(WsPathUtils.resolve(rootFolder, file), stream);
@@ -85,6 +85,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
       // Create commands
       for (String deploygoalCommands : projectType.getDeployGoals().values()) {
         for (String command : UrlCommander.readFile(deploygoalCommands).trim().split("\\r?\\n")) {
+          System.err.println("Change command");
           command = fillConfig(command);
           String prefix =
               "curl -i -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '";
@@ -118,7 +119,9 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   }
 
   private String fillConfig(String configContent) {
+    System.err.println(configContent);
     for (String var : projectType.getConfigVariables().keySet()) {
+      System.err.println(var);
       try {
         configContent =
             configContent.replaceAll("::" + var + "::", projectType.getConfigVariables().get(var));

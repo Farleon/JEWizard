@@ -60,15 +60,15 @@ public class JujuFunctions {
         }
 
         while (i < lines.length
-            && !lines[i].startsWith("START_OF_CONFIG_FILES")
+            && !lines[i].startsWith("START_OF_INSTALLATIONS")
             && i < lines.length) i++;
         i++;
-        while (i < lines.length && !lines[i].startsWith("END_OF_CONFIG_FILES")) {
-          String[] parts = lines[i++].split(":::");
-          p.addConfigFile(parts[0], parts[1]);
+        while (i < lines.length && !lines[i].startsWith("START_OF_INSTALLATIONS")) {
+          p.addInstallation(lines[i++]);
         }
       }
     } catch (Exception e) {
+      e.printStackTrace();
       System.err.println("Could not extend project type with config: " + config);
     }
 

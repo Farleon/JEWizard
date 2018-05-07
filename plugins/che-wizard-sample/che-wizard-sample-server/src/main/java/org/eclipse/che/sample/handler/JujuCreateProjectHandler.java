@@ -56,10 +56,10 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
       // Get info from DAO
       technology = dao.getTechnologies().get(attributes.get(TECHNOLOGY).getString());
       projectType = technology.getProjectTypes().get(attributes.get(PROJECT_TYPE).getString());
-      for (String k : attributes.keySet()) {
+      /* for (String k : attributes.keySet()) {
         System.err.println(k);
-      }
-      System.err.println("Workspaceid: " + attributes.get("workspaceid").getString());
+      }*/
+      // System.err.println("Workspaceid: " + attributes.get("workspaceid").getString());
       String rootFolder = WsPathUtils.absolutize(projectPath);
       // Create folders
       for (String folder : projectType.getFolders()) {
@@ -85,7 +85,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
       // Create commands
       for (String deploygoalCommands : projectType.getDeployGoals().values()) {
         for (String command : UrlCommander.readFile(deploygoalCommands).trim().split("\\r?\\n")) {
-          System.err.println("Change command");
+          // System.err.println("Change command");
           command = fillConfig(command);
           String prefix =
               "curl -i -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '";
@@ -104,13 +104,34 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
             Process pr = Runtime.getRuntime().exec(line);
             String result = UrlCommander.readFromInputStream(pr.getInputStream());
             String result2 = UrlCommander.readFromInputStream(pr.getErrorStream());
-            System.err.println(result);
-            System.err.println(result2);
+            // System.err.println(result);
+            // System.err.println(result2);
+          } catch (Exception e) {
+            System.err.println("Could not do the request");
+          }
+        }
+
+        // Install stuff
+        // System.err.println("INSTALLATIONS FROM HERE");
+        // System.err.println(projectType.getInstallations().size());
+        for (String install : projectType.getInstallations()) {
+          final String[] line = new String[3];
+          line[0] = "/bin/bash";
+          line[1] = "-cl";
+          line[2] = install;
+          try {
+           // System.err.println("INSTALLLLLIONGGGGG" + install);
+            Process pr = Runtime.getRuntime().exec(line);
+            String result = UrlCommander.readFromInputStream(pr.getInputStream());
+            String result2 = UrlCommander.readFromInputStream(pr.getErrorStream());
+            // System.err.println(result);
+            //  System.err.println(result2);
           } catch (Exception e) {
             System.err.println("Could not do the request");
           }
         }
       }
+
     } catch (Exception e) {
       System.err.println("U got urself a mistake somewhere");
     }
@@ -121,7 +142,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
   private String fillConfig(String configContent) {
     System.err.println(configContent);
     for (String var : projectType.getConfigVariables().keySet()) {
-      System.err.println(var);
+    //  System.err.println(var);
       try {
         configContent =
             configContent.replaceAll("::" + var + "::", projectType.getConfigVariables().get(var));
@@ -129,7 +150,7 @@ public class JujuCreateProjectHandler extends MutableProjectConfig implements Cr
         e.printStackTrace();
       }
     }
-    System.err.println(configContent);
+//    System.err.println(configContent);
     return configContent;
   }
 

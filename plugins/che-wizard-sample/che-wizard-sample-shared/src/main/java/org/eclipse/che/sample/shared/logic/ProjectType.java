@@ -12,12 +12,14 @@ public class ProjectType {
   private HashMap<String, String> files;
   private HashMap<String, String> configFiles;
   private HashMap<String, String> configVariables;
+  private ArrayList<String> installations;
 
   public ProjectType(String name, String fileLocation) {
     this.name = name;
     this.fileLocation = fileLocation;
     this.deploygoals = new HashMap<String, String>();
     this.folders = new ArrayList<>();
+    this.installations = new ArrayList<>();
     this.files = new HashMap<>();
     this.configFiles = new HashMap<>();
     this.configVariables = new HashMap<>();
@@ -37,6 +39,10 @@ public class ProjectType {
 
   public ArrayList<String> getFolders() {
     return folders;
+  }
+
+  public ArrayList<String> getInstallations() {
+    return installations;
   }
 
   public HashMap<String, String> getFiles() {
@@ -73,5 +79,9 @@ public class ProjectType {
 
   public void addFolder(String goal) {
     folders.add(goal);
+  }
+
+  public void addInstallation(String installation) {
+    installations.add(installation);
   }
 }

@@ -48,7 +48,11 @@
         <dependency>
             <groupId>org.eclipse.che.sample</groupId>
             <artifactId>plugin-wizard-shared</artifactId>
-        </dependency>    
+        </dependency>   
+        <dependency>
+  <groupId>org.eclipse.che.core</groupId>
+  <artifactId>che-core-api-dto</artifactId>
+</dependency>
     </dependencies>
     <build>
         <plugins>
